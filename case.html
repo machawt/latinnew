@@ -15,12 +15,12 @@
     }
     .case-column {
       flex: 1 1 20%;
-      max-width: 25%;
-      min-width: 18%%;
+      max-width: 20%;
+      min-width: 80px;
       background: #fff;
       border: 2px dashed #999;
       border-radius: 8px;
-      min-height: 80px;
+      min-height: 40px;
       padding: 2px;
       box-sizing: border-box;
     }
@@ -30,7 +30,7 @@
     }
     .noun {
       margin: 4px;
-      padding: 12px 12px;
+      padding: 24px 32px;
       font-size: 1.2rem;
       background-color: #e0f7fa;
       border: 1px solid #00796b;
@@ -44,7 +44,15 @@
     .controls { text-align: center; margin: 10px; }
     button { margin: 5px; padding: 10px 15px; font-size: 1rem; }
     #declensionSelector { text-align: center; margin: 20px; }
+    .completed-animation {
+      animation: flash 0.5s ease-in-out 3;
+    }
+    @keyframes flash {
+      0%, 100% { background-color: #c8e6c9; }
+      50% { background-color: #ffffff; }
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 </head>
 <body>
 
@@ -52,14 +60,9 @@
 
 <div id="declensionSelector">
   <h3>Select Noun Sets to Practice:</h3>
-  <label><input type="checkbox" value="Set 1 – puella" checked> 1st Declension (Set 1)</label>
-  <label><input type="checkbox" value="Set 2 – terra" checked> 1st Declension (Set 2)</label>
-  <label><input type="checkbox" value="Set 3 – puer" checked> 2nd Declension (Set 1)</label>
-  <label><input type="checkbox" value="Set 4 – vir" checked> 2nd Declension (Set 2)</label>
-  <label><input type="checkbox" value="Set 5 – oppidum" checked> 2nd Declension Neuter (Set 1)</label>
-  <label><input type="checkbox" value="Set 6 – templum" checked> 2nd Declension Neuter (Set 2)</label>
-  <label><input type="checkbox" value="Set 7 – fluvius" checked> 3rd Declension (Set 1)</label>
-  <label><input type="checkbox" value="Set 8 – rex" checked> 3rd Declension (Set 2)</label>
+  <label><input type="checkbox" value="Set 1 – puella" checked> 1st Declension</label>
+  <label><input type="checkbox" value="Set 2 – servus" checked> 2nd Declension</label>
+  <label><input type="checkbox" value="Set 3 – templum" checked> 2nd Declension Neuter</label>
   <br><br>
   <h3>Select Cases to Practice:</h3>
   <label><input type="checkbox" class="case-filter" value="Nominative" checked> Nominative</label>
@@ -84,7 +87,7 @@
 
 <div id="nouns">
   <h3>Word Bank</h3>
-  <div id="wordBank"></div>
+  <div id="wordBank" class="case-column"></div>
 </div>
 
 <audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio>
@@ -99,7 +102,7 @@ const allNounSets = [
       { form: "puellae", case: "Dative" },
       { form: "puellam", case: "Accusative" },
       { form: "puella", case: "Ablative" },
-      { form: "puellae", case: "Nominative" },
+      { form: "puellae (pl.)", case: "Nominative" },
       { form: "puellārum", case: "Genitive" },
       { form: "puellīs", case: "Dative" },
       { form: "puellās", case: "Accusative" },
@@ -107,67 +110,22 @@ const allNounSets = [
     ]
   },
   {
-    name: "Set 2 – terra",
+    name: "Set 2 – servus",
     nouns: [
-      { form: "terra", case: "Nominative" },
-      { form: "terrae", case: "Genitive" },
-      { form: "terrae", case: "Dative" },
-      { form: "terram", case: "Accusative" },
-      { form: "terra", case: "Ablative" },
-      { form: "terrae", case: "Nominative" },
-      { form: "terrarum", case: "Genitive" },
-      { form: "terris", case: "Dative" },
-      { form: "terras", case: "Accusative" },
-      { form: "terris", case: "Ablative" }
+      { form: "servus", case: "Nominative" },
+      { form: "servī", case: "Genitive" },
+      { form: "servō", case: "Dative" },
+      { form: "servum", case: "Accusative" },
+      { form: "servō", case: "Ablative" },
+      { form: "servī (pl.)", case: "Nominative" },
+      { form: "servōrum", case: "Genitive" },
+      { form: "servīs", case: "Dative" },
+      { form: "servōs", case: "Accusative" },
+      { form: "servīs", case: "Ablative" }
     ]
   },
   {
-    name: "Set 3 – puer",
-    nouns: [
-      { form: "puer", case: "Nominative" },
-      { form: "pueri", case: "Genitive" },
-      { form: "puero", case: "Dative" },
-      { form: "puerum", case: "Accusative" },
-      { form: "puerō", case: "Ablative" },
-      { form: "pueri", case: "Nominative" },
-      { form: "puerōrum", case: "Genitive" },
-      { form: "puerīs", case: "Dative" },
-      { form: "puerōs", case: "Accusative" },
-      { form: "puerīs", case: "Ablative" }
-    ]
-  },
-  {
-    name: "Set 4 – vir",
-    nouns: [
-      { form: "vir", case: "Nominative" },
-      { form: "virī", case: "Genitive" },
-      { form: "virō", case: "Dative" },
-      { form: "virum", case: "Accusative" },
-      { form: "virō", case: "Ablative" },
-      { form: "virī", case: "Nominative" },
-      { form: "virōrum", case: "Genitive" },
-      { form: "virīs", case: "Dative" },
-      { form: "virōs", case: "Accusative" },
-      { form: "virīs", case: "Ablative" }
-    ]
-  },
-  {
-    name: "Set 5 – oppidum",
-    nouns: [
-      { form: "oppidum", case: "Nominative" },
-      { form: "oppidi", case: "Genitive" },
-      { form: "oppido", case: "Dative" },
-      { form: "oppidum", case: "Accusative" },
-      { form: "oppido", case: "Ablative" },
-      { form: "oppida", case: "Nominative" },
-      { form: "oppidorum", case: "Genitive" },
-      { form: "oppidis", case: "Dative" },
-      { form: "oppida", case: "Accusative" },
-      { form: "oppidis", case: "Ablative" }
-    ]
-  },
-  {
-    name: "Set 6 – templum",
+    name: "Set 3 – templum",
     nouns: [
       { form: "templum", case: "Nominative" },
       { form: "templī", case: "Genitive" },
@@ -179,36 +137,6 @@ const allNounSets = [
       { form: "templīs", case: "Dative" },
       { form: "templa", case: "Accusative" },
       { form: "templīs", case: "Ablative" }
-    ]
-  },
-  {
-    name: "Set 7 – fluvius",
-    nouns: [
-      { form: "fluvius", case: "Nominative" },
-      { form: "fluviī", case: "Genitive" },
-      { form: "flūviū", case: "Dative" },
-      { form: "flūviū", case: "Accusative" },
-      { form: "flūviō", case: "Ablative" },
-      { form: "fluviī", case: "Nominative" },
-      { form: "flūviōrum", case: "Genitive" },
-      { form: "fluviīs", case: "Dative" },
-      { form: "flūviōs", case: "Accusative" },
-      { form: "flūviīs", case: "Ablative" }
-    ]
-  },
-  {
-    name: "Set 8 – rex",
-    nouns: [
-      { form: "rex", case: "Nominative" },
-      { form: "regis", case: "Genitive" },
-      { form: "regī", case: "Dative" },
-      { form: "regem", case: "Accusative" },
-      { form: "rege", case: "Ablative" },
-      { form: "reges", case: "Nominative" },
-      { form: "regum", case: "Genitive" },
-      { form: "regibus", case: "Dative" },
-      { form: "reges", case: "Accusative" },
-      { form: "regibus", case: "Ablative" }
     ]
   }
 ];
@@ -239,10 +167,8 @@ function initColumns() {
   container.innerHTML = "";
   selectedCases.forEach(c => {
     const col = document.createElement("div");
-    col.className = "case-column";
+    col.className = "case-column sortable";
     col.dataset.case = c;
-    col.ondragover = allowDrop;
-    col.ondrop = drop;
     col.innerHTML = `<h3>${c}</h3>`;
     container.appendChild(col);
   });
@@ -256,29 +182,27 @@ function loadNouns() {
     const div = document.createElement("div");
     div.className = "noun";
     div.id = `noun-${currentSet}-${index}`;
-    div.draggable = true;
-    div.ondragstart = drag;
     div.dataset.case = n.case;
     div.innerText = n.form;
     wordBank.appendChild(div);
   });
+  makeSortable();
 }
 
-function allowDrop(ev) { ev.preventDefault(); }
-function drag(ev) { ev.dataTransfer.setData("text", ev.target.id); }
-function drop(ev) {
-  ev.preventDefault();
-  const id = ev.dataTransfer.getData("text");
-  const el = document.getElementById(id);
-  if (ev.target.classList.contains("case-column")) {
-    ev.target.appendChild(el);
-  }
+function makeSortable() {
+  document.querySelectorAll('.sortable').forEach(el => {
+    Sortable.create(el, {
+      group: 'nouns',
+      animation: 150,
+      fallbackOnBody: true,
+      swapThreshold: 0.65
+    });
+  });
 }
 
 function checkAnswers() {
   const correctAudio = document.getElementById("correctSound");
   let allCorrect = true;
-
   document.querySelectorAll(".noun").forEach(n => {
     n.classList.remove("correct", "incorrect");
   });
@@ -286,13 +210,9 @@ function checkAnswers() {
   document.querySelectorAll(".case-column").forEach(col => {
     const expected = col.dataset.case;
     col.querySelectorAll(".noun").forEach(noun => {
-      const form = noun.innerText;
-      const caseCorrect = nounSets[currentSet].nouns.some(
-        n => n.form === form && n.case === expected
-      );
-      if (caseCorrect) {
+      const matchingForms = nounSets[currentSet].nouns.filter(n => n.form === noun.innerText);
+      if (matchingForms.some(m => m.case === expected)) {
         noun.classList.add("correct");
-        correctAudio.play();
       } else {
         noun.classList.add("incorrect");
         allCorrect = false;
@@ -301,33 +221,47 @@ function checkAnswers() {
   });
 
   if (allCorrect) {
-    alert("Congratulations! All answers are correct!");
+    document.getElementById("caseColumns").classList.add("completed-animation");
+    correctAudio.currentTime = 0;
+    correctAudio.play();
+    setTimeout(() => {
+      document.getElementById("caseColumns").classList.remove("completed-animation");
+      nextSet();
+    }, 1000);
   }
 }
 
 function resetQuiz() {
-  document.getElementById("declensionSelector").style.display = "block";
-  document.getElementById("quizControls").style.display = "none";
-  document.getElementById("caseColumns").innerHTML = "";
-  document.getElementById("wordBank").innerHTML = "";
-}
-
-function previousSet() {
-  currentSet = (currentSet - 1 + nounSets.length) % nounSets.length;
-  renderSet();
+  const wordBank = document.getElementById("wordBank");
+  document.querySelectorAll(".noun").forEach(n => {
+    n.classList.remove("correct", "incorrect");
+    wordBank.appendChild(n);
+  });
 }
 
 function nextSet() {
-  currentSet = (currentSet + 1) % nounSets.length;
-  renderSet();
+  if (currentSet < nounSets.length - 1) {
+    currentSet++;
+    renderSet();
+  } else {
+    alert("All sets completed!");
+  }
+}
+function previousSet() {
+  if (currentSet > 0) {
+    currentSet--;
+    renderSet();
+  } else {
+    alert("Already at the first set.");
+  }
 }
 
 function renderSet() {
-  const set = nounSets[currentSet];
-  document.getElementById("setName").innerText = set.name;
+  document.getElementById("setName").innerText = nounSets[currentSet].name;
   initColumns();
   loadNouns();
 }
 </script>
+
 </body>
 </html>
