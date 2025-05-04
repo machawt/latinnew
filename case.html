@@ -2,163 +2,203 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Latin Noun Quiz – Touch to Match</title>
+  <title>Latin Noun Quiz</title>
   <style>
-    body { font-family: sans-serif; padding: 10px; background: #f0f0f5; }
-    .case-box { border: 2px dashed #888; min-height: 60px; padding: 5px; margin: 5px; border-radius: 8px; display: flex; flex-wrap: wrap; justify-content: center; align-items: center; background: #fff; }
-    .noun-button { margin: 3px; padding: 8px 12px; font-size: 0.9rem; background: #e0f7fa; border: 1px solid #00796b; border-radius: 5px; cursor: pointer; display: inline-block; }
-    .selected { background: #ffecb3; }
-    .correct { background-color: #c8e6c9 !important; }
-    .incorrect { background-color: #ffcdd2 !important; }
-    .grid { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-    .word-bank, .case-columns { margin: 10px auto; max-width: 800px; }
-    .controls, #startMenu { text-align: center; margin: 10px; }
-    button { margin: 5px; padding: 8px 14px; font-size: 1rem; }
+    body { font-family: sans-serif; background: #f9f9f9; padding: 10px; }
     h2, h3 { text-align: center; }
-    .case-column h4 { margin: 2px; text-align: center; }
+    #menu, #quiz, #result { max-width: 600px; margin: auto; }
+    .case-boxes { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 20px; }
+    .case-box {
+      width: 100px;
+      height: 80px;
+      border: 2px dashed #666;
+      border-radius: 8px;
+      text-align: center;
+      padding: 4px;
+      font-size: 0.9rem;
+      position: relative;
+      background: #fff;
+    }
+    .case-box span {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8rem;
+    }
+    .noun-button {
+      padding: 5px 10px;
+      margin: 4px;
+      background: #e0f7fa;
+      border: 1px solid #00796b;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .correct { background-color: #a5d6a7 !important; }
+    .incorrect { background-color: #ef9a9a !important; }
+    .controls { text-align: center; margin-top: 20px; }
+    button { padding: 6px 12px; margin: 4px; }
   </style>
 </head>
-<body><h2>Latin Noun Quiz – Touch to Match</h2><div id="startMenu">
-  <h3>Select Nouns and Cases:</h3>
-  <label><input type="checkbox" class="noun-set" value="vir" checked> vir (m)</label>
-  <label><input type="checkbox" class="noun-set" value="oppidum" checked> oppidum (n)</label>
-  <label><input type="checkbox" class="noun-set" value="fluvius" checked> fluvius (m)</label>
-  <label><input type="checkbox" class="noun-set" value="puer" checked> puer (m)</label>
-  <label><input type="checkbox" class="noun-set" value="terra" checked> terra (f)</label>
+<body><div id="menu">
+  <h2>Latin Noun Quiz</h2>
+  <h3>Select Cases:</h3>
+  <label><input type="checkbox" value="Nominative" checked> Nominative</label>
+  <label><input type="checkbox" value="Genitive" checked> Genitive</label>
+  <label><input type="checkbox" value="Dative" checked> Dative</label>
+  <label><input type="checkbox" value="Accusative" checked> Accusative</label>
+  <label><input type="checkbox" value="Ablative" checked> Ablative</label>
   <br><br>
-  <label><input type="checkbox" class="case-filter" value="Nominative" checked> Nominative</label>
-  <label><input type="checkbox" class="case-filter" value="Genitive" checked> Genitive</label>
-  <label><input type="checkbox" class="case-filter" value="Dative" checked> Dative</label>
-  <label><input type="checkbox" class="case-filter" value="Accusative" checked> Accusative</label>
-  <label><input type="checkbox" class="case-filter" value="Ablative" checked> Ablative</label>
-  <br><br>
-  <button onclick="startQuiz()">Start</button>
-</div><div class="controls" id="quizControls" style="display:none">
-  <button onclick="checkAnswers()">Check</button>
-  <button onclick="resetQuiz()">Reset</button>
-</div><h3 id="nounTitle"></h3>
-<div class="word-bank grid" id="wordBank"></div>
-<div class="case-columns" id="caseColumns"></div>
-<audio id="correctSound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3" preload="auto"></audio><script>
-const nounData = {
-  vir: [
-    ["vir", "Nominative"], ["virī", "Genitive"], ["virō", "Dative"], ["virum", "Accusative"], ["virō", "Ablative"],
-    ["virī", "Nominative"], ["virōrum", "Genitive"], ["virīs", "Dative"], ["virōs", "Accusative"], ["virīs", "Ablative"]
-  ],
-  oppidum: [
-    ["oppidum", "Nominative"], ["oppidī", "Genitive"], ["oppidō", "Dative"], ["oppidum", "Accusative"], ["oppidō", "Ablative"],
-    ["oppida", "Nominative"], ["oppidōrum", "Genitive"], ["oppidīs", "Dative"], ["oppida", "Accusative"], ["oppidīs", "Ablative"]
-  ],
-  fluvius: [
-    ["fluvius", "Nominative"], ["fluviī", "Genitive"], ["fluviō", "Dative"], ["fluvium", "Accusative"], ["fluviō", "Ablative"],
-    ["fluviī", "Nominative"], ["fluviōrum", "Genitive"], ["fluviīs", "Dative"], ["fluviōs", "Accusative"], ["fluviīs", "Ablative"]
-  ],
-  puer: [
-    ["puer", "Nominative"], ["puerī", "Genitive"], ["puerō", "Dative"], ["puerum", "Accusative"], ["puerō", "Ablative"],
-    ["puerī", "Nominative"], ["puerōrum", "Genitive"], ["puerīs", "Dative"], ["puerōs", "Accusative"], ["puerīs", "Ablative"]
-  ],
-  terra: [
-    ["terra", "Nominative"], ["terrae", "Genitive"], ["terrae", "Dative"], ["terram", "Accusative"], ["terrā", "Ablative"],
-    ["terrae", "Nominative"], ["terrārum", "Genitive"], ["terrīs", "Dative"], ["terrās", "Accusative"], ["terrīs", "Ablative"]
-  ]
-};
+  <button onclick="startQuiz()">Start Quiz</button>
+</div><div id="quiz" style="display:none">
+  <h3 id="nounSetTitle"></h3>
+  <div class="case-boxes" id="caseBoxes"></div>
+  <div id="wordBank" style="text-align:center; margin-top:10px;"></div>
+  <div class="controls">
+    <button onclick="previousSet()">Back</button>
+    <button onclick="checkAnswers()">Check Answers</button>
+    <button onclick="resetSet()">Reset</button>
+    <button onclick="nextSet()">Next</button>
+  </div>
+</div><script>
+const nounSets = [
+  {
+    title: "puella (f., 1st declension)",
+    nouns: [
+      { form: "puella", case: "Nominative" },
+      { form: "puellae", case: "Genitive" },
+      { form: "puellae", case: "Dative" },
+      { form: "puellam", case: "Accusative" },
+      { form: "puella", case: "Ablative" },
+      { form: "puellae", case: "Nominative" },
+      { form: "puellārum", case: "Genitive" },
+      { form: "puellīs", case: "Dative" },
+      { form: "puellās", case: "Accusative" },
+      { form: "puellīs", case: "Ablative" }
+    ]
+  },
+  {
+    title: "vir (m., 2nd declension)",
+    nouns: [
+      { form: "vir", case: "Nominative" },
+      { form: "virī", case: "Genitive" },
+      { form: "virō", case: "Dative" },
+      { form: "virum", case: "Accusative" },
+      { form: "virō", case: "Ablative" },
+      { form: "virī", case: "Nominative" },
+      { form: "virōrum", case: "Genitive" },
+      { form: "virīs", case: "Dative" },
+      { form: "virōs", case: "Accusative" },
+      { form: "virīs", case: "Ablative" }
+    ]
+  }
+];
 
-let selectedNouns = [], selectedCases = [], selectedWord = null;
+let currentSetIndex = 0;
+let selectedCases = [];
+let answerMap = {}; // uniqueID -> correct case
+let placedMap = {}; // uniqueID -> user-selected case
+let idCounter = 0;
 
 function startQuiz() {
-  selectedNouns = Array.from(document.querySelectorAll(".noun-set:checked")).map(x => x.value);
-  selectedCases = Array.from(document.querySelectorAll(".case-filter:checked")).map(x => x.value);
-  if (selectedNouns.length === 0 || selectedCases.length === 0) return alert("Select at least one noun and one case");
-  document.getElementById("startMenu").style.display = "none";
-  document.getElementById("quizControls").style.display = "block";
-  generateQuiz();
+  selectedCases = Array.from(document.querySelectorAll('#menu input[type=checkbox]:checked')).map(cb => cb.value);
+  if (selectedCases.length === 0) {
+    alert("Select at least one case.");
+    return;
+  }
+  document.getElementById("menu").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  renderSet();
 }
 
-function generateQuiz() {
-  const wordBank = document.getElementById("wordBank");
-  const caseColumns = document.getElementById("caseColumns");
-  wordBank.innerHTML = "";
-  caseColumns.innerHTML = "";
-  let words = [];
-  selectedNouns.forEach(n => {
-    nounData[n].forEach((entry, i) => {
-      if (selectedCases.includes(entry[1])) {
-        words.push({ form: entry[0], case: entry[1], id: `${n}-${entry[0]}-${i}` });
-      }
-    });
+function renderSet() {
+  answerMap = {}; placedMap = {}; idCounter = 0;
+  const set = nounSets[currentSetIndex];
+  document.getElementById("nounSetTitle").innerText = set.title;
+  const boxes = document.getElementById("caseBoxes");
+  boxes.innerHTML = "";
+  selectedCases.forEach(cs => {
+    const box = document.createElement("div");
+    box.className = "case-box";
+    box.dataset.case = cs;
+    box.innerHTML = `<strong>${cs}</strong><span></span>`;
+    box.onclick = () => selectBox(box);
+    boxes.appendChild(box);
   });
-  // shuffle
-  words = words.sort(() => Math.random() - 0.5);
-  words.forEach(w => {
-    const btn = document.createElement("div");
+  const wordBank = document.getElementById("wordBank");
+  wordBank.innerHTML = "";
+  set.nouns.filter(n => selectedCases.includes(n.case)).forEach(noun => {
+    const id = `noun-${idCounter++}`;
+    answerMap[id] = noun.case;
+    const btn = document.createElement("button");
     btn.className = "noun-button";
-    btn.innerText = w.form;
-    btn.dataset.case = w.case;
-    btn.dataset.id = w.id;
-    btn.onclick = () => selectWord(btn);
+    btn.textContent = noun.form;
+    btn.dataset.id = id;
+    btn.onclick = () => selectNoun(btn);
     wordBank.appendChild(btn);
   });
-  selectedCases.forEach(c => {
-    const div = document.createElement("div");
-    div.className = "case-box";
-    div.dataset.case = c;
-    div.innerHTML = `<h4>${c}</h4>`;
-    div.onclick = () => placeWord(div);
-    caseColumns.appendChild(div);
-  });
 }
 
-function selectWord(btn) {
+let selectedNoun = null;
+function selectNoun(btn) {
   if (btn.classList.contains("selected")) {
     btn.classList.remove("selected");
-    selectedWord = null;
+    selectedNoun = null;
   } else {
     document.querySelectorAll(".noun-button").forEach(b => b.classList.remove("selected"));
     btn.classList.add("selected");
-    selectedWord = btn;
+    selectedNoun = btn;
   }
 }
 
-function placeWord(box) {
-  if (selectedWord) {
-    const clone = selectedWord.cloneNode(true);
-    clone.classList.remove("selected");
-    clone.onclick = () => {
-      clone.remove();
-      document.getElementById("wordBank").appendChild(selectedWord);
-    };
-    box.appendChild(clone);
-    selectedWord.remove();
-    selectedWord = null;
+function selectBox(box) {
+  if (!selectedNoun) return;
+  const id = selectedNoun.dataset.id;
+  const span = box.querySelector("span");
+  const clone = selectedNoun.cloneNode(true);
+  clone.onclick = null;
+  span.appendChild(clone);
+  selectedNoun.remove();
+  placedMap[id] = box.dataset.case;
+  selectedNoun = null;
+  if (Object.keys(placedMap).length === Object.keys(answerMap).length) {
+    checkAnswers();
   }
 }
 
 function checkAnswers() {
-  let allCorrect = true;
-  const correctAudio = document.getElementById("correctSound");
-  document.querySelectorAll(".noun-button").forEach(n => {
-    n.classList.remove("correct", "incorrect");
-  });
-  document.querySelectorAll(".case-box").forEach(box => {
-    const expected = box.dataset.case;
-    box.querySelectorAll(".noun-button").forEach(n => {
-      if (n.dataset.case === expected) {
-        n.classList.add("correct");
+  for (const box of document.querySelectorAll(".case-box")) {
+    const span = box.querySelector("span");
+    span.querySelectorAll("button").forEach(btn => {
+      const id = btn.dataset.id;
+      if (answerMap[id] === box.dataset.case) {
+        btn.classList.add("correct");
       } else {
-        n.classList.add("incorrect");
-        allCorrect = false;
+        btn.classList.add("incorrect");
       }
     });
-  });
-  if (allCorrect) {
-    correctAudio.currentTime = 0;
-    correctAudio.play();
-    alert("All correct!");
+  }
+  if (Object.keys(answerMap).every(id => placedMap[id] === answerMap[id])) {
+    setTimeout(() => nextSet(), 1000);
   }
 }
 
-function resetQuiz() {
-  generateQuiz();
+function resetSet() {
+  renderSet();
+}
+
+function nextSet() {
+  if (currentSetIndex < nounSets.length - 1) {
+    currentSetIndex++;
+    renderSet();
+  } else {
+    alert("No more sets.");
+  }
+}
+function previousSet() {
+  if (currentSetIndex > 0) {
+    currentSetIndex--;
+    renderSet();
+  }
 }
 </script></body>
 </html>
