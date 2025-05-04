@@ -1,222 +1,70 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Latin Noun Drag-and-Touch Quiz</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Latin Noun Quiz</title>
   <style>
-    body { font-family: sans-serif; padding: 10px; background: #f0f0f5; }
+    body { font-family: sans-serif; background: #f4f4f9; padding: 10px; }
     h2, h3 { text-align: center; }
-    .case-boxes {
+    .controls, .menu { text-align: center; margin: 10px; }
+    .noun-button {
+      padding: 6px 12px;
+      margin: 4px;
+      font-size: 1rem;
+      background-color: #e0f7fa;
+      border: 1px solid #00796b;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+    }
+    .noun-button.correct { background-color: #c8e6c9 !important; }
+    .noun-button.incorrect { background-color: #ffcdd2 !important; }
+    .case-box {
+      min-height: 60px;
+      padding: 10px;
+      margin: 10px;
+      border: 2px dashed #aaa;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .case-box h4 { margin: 0 0 6px; }
+    .case-area {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
       gap: 10px;
-      margin-bottom: 20px;
     }
-    .case-box {
-      flex: 1 1 25%;
-      max-width: 160px;
-      min-height: 60px;
-      background: #fff;
-      border: 2px dashed #666;
-      border-radius: 8px;
-      text-align: center;
-      padding: 5px;
-      box-sizing: border-box;
-    }
-    .case-box h4 {
-      margin: 4px 0;
-      font-size: 1em;
-    }
-    .word-bank {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 6px;
-    }
-    .noun-btn {
-      padding: 6px 10px;
-      font-size: 0.9rem;
-      background-color: #e0f7fa;
-      border: 1px solid #00796b;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .correct { background-color: #c8e6c9 !important; }
-    .incorrect { background-color: #ffcdd2 !important; }
-    .selected { outline: 3px solid orange; }
-    #controls, #setName { text-align: center; margin: 10px; }
-    button { margin: 4px; padding: 8px 12px; font-size: 1rem; }
-    #startMenu { text-align: center; margin-bottom: 20px; }
+    #wordBank { text-align: center; }
   </style>
 </head>
-<body><h2>Latin Noun Quiz – Touch to Match</h2><div id="startMenu">
-  <h3>Select Cases:</h3>
-  <label><input type="checkbox" class="case-filter" value="Nominative" checked> Nominative</label>
-  <label><input type="checkbox" class="case-filter" value="Genitive" checked> Genitive</label>
-  <label><input type="checkbox" class="case-filter" value="DatAbl" checked> Dative/Ablative</label>
-  <label><input type="checkbox" class="case-filter" value="Accusative" checked> Accusative</label>
-  <br><br>
-  <button onclick="startQuiz()">Start</button>
-</div><div id="setName"></div>
-<div id="caseBoxes" class="case-boxes"></div>
-<h3>Word Bank</h3>
-<div id="wordBank" class="word-bank"></div><div id="controls">
-  <button onclick="checkAnswers()">Check Answers</button>
-  <button onclick="resetSet()">Reset</button>
-  <button onclick="prevSet()">Previous</button>
-  <button onclick="nextSet()">Next</button>
-</div><script>
-const allSets = [
-  {
-    name: "Set 1 – terra (1st declension, f)",
-    words: [
-      { form: "terra", case: "Nominative" },
-      { form: "terrae", case: "Genitive" },
-      { form: "terrae", case: "DatAbl" },
-      { form: "terram", case: "Accusative" },
-      { form: "terrā", case: "DatAbl" },
-      { form: "terrae", case: "Nominative" },
-      { form: "terrārum", case: "Genitive" },
-      { form: "terrīs", case: "DatAbl" },
-      { form: "terrās", case: "Accusative" },
-      { form: "terrīs", case: "DatAbl" }
-    ]
-  },
-  {
-    name: "Set 2 – oppidum (2nd declension, n)",
-    words: [
-      { form: "oppidum", case: "Nominative" },
-      { form: "oppidī", case: "Genitive" },
-      { form: "oppidō", case: "DatAbl" },
-      { form: "oppidum", case: "Accusative" },
-      { form: "oppidō", case: "DatAbl" },
-      { form: "oppida", case: "Nominative" },
-      { form: "oppidōrum", case: "Genitive" },
-      { form: "oppidīs", case: "DatAbl" },
-      { form: "oppida", case: "Accusative" },
-      { form: "oppidīs", case: "DatAbl" }
-    ]
-  }
-];
+<body>
+<h2>Latin Noun Quiz</h2>
+<div class="controls">
+  <button onclick="resetQuiz()">Reset</button>
+</div>
+<div id="quiz">
+  <h3 id="setTitle">Set Name</h3>
+  <div class="case-area" id="caseBoxes"></div>
+  <div id="wordBank"></div>
+</div>
+<script>
+const caseLabels = ["Nominative", "Genitive", "Dative/Ablative", "Accusative"];
+let wordBankData = [];
+let selectedButton = null;const quizData = [ { title: "1st Declension – puella (f)", words: [ {text: "puella", case: "Nominative"}, {text: "puellae", case: "Genitive"}, {text: "puellae", case: "Dative/Ablative"}, {text: "puellam", case: "Accusative"}, {text: "puella", case: "Dative/Ablative"}, {text: "puellae (pl.)", case: "Nominative"}, {text: "puellārum", case: "Genitive"}, {text: "puellīs", case: "Dative/Ablative"}, {text: "puellās", case: "Accusative"}, ] } ];
 
-let currentSet = 0;
-let selectedCases = [];
-let selectedNoun = null;
-let state = {};
+function loadSet(index = 0) { const set = quizData[index]; document.getElementById("setTitle").innerText = set.title; wordBankData = [...set.words.map((w, i) => ({...w, id: i + "-" + Math.random()}))]; renderWordBank(); renderCaseBoxes(); }
 
-function startQuiz() {
-  selectedCases = Array.from(document.querySelectorAll('.case-filter:checked')).map(cb => cb.value);
-  document.getElementById("startMenu").style.display = "none";
-  renderSet();
-}
+function renderWordBank() { const bank = document.getElementById("wordBank"); bank.innerHTML = ""; wordBankData.forEach(word => { const btn = document.createElement("div"); btn.className = "noun-button"; btn.innerText = word.text; btn.dataset.id = word.id; btn.onclick = () => handleSelect(btn, word); bank.appendChild(btn); }); }
 
-function renderSet() {
-  document.getElementById("setName").innerText = allSets[currentSet].name;
-  state = {};
-  selectedNoun = null;
-  renderCases();
-  renderWordBank();
-}
+function renderCaseBoxes() { const area = document.getElementById("caseBoxes"); area.innerHTML = ""; caseLabels.forEach(label => { const box = document.createElement("div"); box.className = "case-box"; box.dataset.case = label; box.innerHTML = <h4>${label}</h4>; box.onclick = () => handlePlace(label, box); area.appendChild(box); }); }
 
-function renderCases() {
-  const boxContainer = document.getElementById("caseBoxes");
-  boxContainer.innerHTML = "";
-  selectedCases.forEach(c => {
-    const box = document.createElement("div");
-    box.className = "case-box";
-    box.dataset.case = c;
-    box.innerHTML = `<h4>${c}</h4>`;
-    box.onclick = () => placeNoun(box);
-    boxContainer.appendChild(box);
-  });
-}
+function handleSelect(button, word) { if (selectedButton && selectedButton === button) { // deselect and return to bank selectedButton.classList.remove("selected"); selectedButton = null; return; } if (selectedButton) { selectedButton.classList.remove("selected"); } selectedButton = button; button.classList.add("selected"); }
 
-function renderWordBank() {
-  const wordBank = document.getElementById("wordBank");
-  wordBank.innerHTML = "";
-  const currentWords = allSets[currentSet].words.filter(w => selectedCases.includes(w.case));
-  currentWords.forEach((word, i) => {
-    const id = `w${i}-${Math.random().toString(36).substr(2,5)}`;
-    const btn = document.createElement("div");
-    btn.className = "noun-btn";
-    btn.innerText = word.form;
-    btn.dataset.case = word.case;
-    btn.dataset.word = word.form;
-    btn.dataset.id = id;
-    btn.onclick = () => selectNoun(btn);
-    wordBank.appendChild(btn);
-  });
-}
+function handlePlace(targetCase, box) { if (!selectedButton) return; const id = selectedButton.dataset.id; const word = wordBankData.find(w => w.id === id); if (!word) return; const clone = selectedButton.cloneNode(true); clone.onclick = () => { document.getElementById("wordBank").appendChild(clone); box.removeChild(clone); clone.classList.remove("correct", "incorrect"); }; // Mark correctness if (word.case === targetCase || (word.case === "Dative" && targetCase === "Dative/Ablative") || (word.case === "Ablative" && targetCase === "Dative/Ablative")) { clone.classList.add("correct"); } else { clone.classList.add("incorrect"); } box.appendChild(clone); selectedButton.remove(); selectedButton = null; }
 
-function selectNoun(btn) {
-  if (selectedNoun === btn) {
-    btn.classList.remove("selected");
-    selectedNoun = null;
-  } else {
-    document.querySelectorAll(".noun-btn").forEach(b => b.classList.remove("selected"));
-    btn.classList.add("selected");
-    selectedNoun = btn;
-  }
-}
+function resetQuiz() { const allPlaced = document.querySelectorAll(".case-box .noun-button"); allPlaced.forEach(btn => btn.remove()); selectedButton = null; renderWordBank(); }
 
-function placeNoun(box) {
-  if (!selectedNoun) return;
+loadSet(); </script>
 
-  const clone = selectedNoun.cloneNode(true);
-  clone.classList.remove("selected");
-  clone.onclick = () => {
-    clone.remove();
-    document.getElementById("wordBank").appendChild(clone);
-    state[clone.dataset.id] = null;
-  };
-  box.appendChild(clone);
-  state[selectedNoun.dataset.id] = box.dataset.case;
-  selectedNoun.remove();
-  selectedNoun = null;
-}
-
-function checkAnswers() {
-  let correct = 0;
-  let total = 0;
-  document.querySelectorAll(".noun-btn").forEach(btn => btn.classList.remove("correct", "incorrect"));
-
-  document.querySelectorAll(".case-box").forEach(box => {
-    const expected = box.dataset.case;
-    box.querySelectorAll(".noun-btn").forEach(btn => {
-      total++;
-      if (btn.dataset.case === expected || (expected === 'DatAbl' && (btn.dataset.case === 'Dative' || btn.dataset.case === 'Ablative'))) {
-        btn.classList.add("correct");
-        correct++;
-      } else {
-        btn.classList.add("incorrect");
-      }
-    });
-  });
-
-  if (correct === total && total > 0) {
-    setTimeout(() => nextSet(), 1000);
-  }
-}
-
-function resetSet() {
-  renderSet();
-}
-
-function nextSet() {
-  if (currentSet < allSets.length - 1) {
-    currentSet++;
-    renderSet();
-  } else {
-    alert("No more sets.");
-  }
-}
-
-function prevSet() {
-  if (currentSet > 0) {
-    currentSet--;
-    renderSet();
-  }
-}
-</script></body>
+</body>
 </html>
