@@ -48,9 +48,9 @@
     <h3>Select Cases:</h3>
     <label><input type="checkbox" value="Nominative" checked> Nominative</label>
     <label><input type="checkbox" value="Genitive" checked> Genitive</label>
-    <label><input type="checkbox" value="Dative" checked> Dative</label>
+    <label><input type="checkbox" value="DativeAblative" checked> DativeAblative</label>
     <label><input type="checkbox" value="Accusative" checked> Accusative</label>
-    <label><input type="checkbox" value="Ablative" checked> Ablative</label>
+    
     <br><br>
     <button onclick="startQuiz()">Start Quiz</button>
   </div>  <div id="quizArea" style="display:none">
@@ -71,14 +71,14 @@ const sets = [
     nouns: [
       { text: "terra", case: "Nominative" },
       { text: "terrae", case: "Genitive" },
-      { text: "terrae", case: "Dative" },
+      { text: "terrae", case: "value="DativeAblative" },
       { text: "terram", case: "Accusative" },
-      { text: "terrā", case: "Ablative" },
+      { text: "terrā", case: "value="DativeAblative" },
       { text: "terrae (pl.)", case: "Nominative" },
       { text: "terrārum", case: "Genitive" },
-      { text: "terrīs", case: "Dative" },
+      { text: "terrīs", case: "value="DativeAblative" },
       { text: "terrās", case: "Accusative" },
-      { text: "terrīs", case: "Ablative" }
+      { text: "terrīs", case: "value="DativeAblative" }
     ]
   },
   {
@@ -86,14 +86,14 @@ const sets = [
     nouns: [
       { text: "oppidum", case: "Nominative" },
       { text: "oppidī", case: "Genitive" },
-      { text: "oppidō", case: "Dative" },
+      { text: "oppidō", case: "value="DativeAblative" },
       { text: "oppidum", case: "Accusative" },
-      { text: "oppidō", case: "Ablative" },
+      { text: "oppidō", case: "value="DativeAblative" },
       { text: "oppida", case: "Nominative" },
       { text: "oppidōrum", case: "Genitive" },
-      { text: "oppidīs", case: "Dative" },
+      { text: "oppidīs", case: "value="DativeAblative" },
       { text: "oppida", case: "Accusative" },
-      { text: "oppidīs", case: "Ablative" }
+      { text: "oppidīs", case: "value="DativeAblative" }
     ]
   },
   {
@@ -101,14 +101,14 @@ const sets = [
     nouns: [
       { text: "fluvius", case: "Nominative" },
       { text: "fluviī", case: "Genitive" },
-      { text: "fluviō", case: "Dative" },
+      { text: "fluviō", case: "value="DativeAblative" },
       { text: "fluvium", case: "Accusative" },
-      { text: "fluviō", case: "Ablative" },
+      { text: "fluviō", case: "value="DativeAblative" },
       { text: "fluviī (pl.)", case: "Nominative" },
       { text: "fluviōrum", case: "Genitive" },
-      { text: "fluviīs", case: "Dative" },
-      { text: "fluviōs", case: "Accusative" },
-      { text: "fluviīs", case: "Ablative" }
+      { text: "fluviīs", case: "value="DativeAblative" },
+      { text: "fluviōs", case: "value="Accusative" },
+      { text: "fluviīs", case: "value="DativeAblative" }
     ]
   }
 ];
