@@ -36,7 +36,10 @@
   <h3>Select Declension Sets</h3>
   <label><input type="checkbox" value="puella" checked> 1st – puella</label>
   <label><input type="checkbox" value="terra" checked> 1st – terra</label>
-  <label><input type="checkbox" value="puer" checked> 2nd – puer</label>  <h3>Select Cases</h3>
+  <label><input type="checkbox" value="puer" checked> 2nd – puer</label>  
+   <label><input type="checkbox" value="vir" checked> 2nd – vir</label>  
+  <label><input type="checkbox" value="oppidum" checked> 2nd – oppidum</label>  
+  <label><input type="checkbox" value="fluvius" checked> 2nd – fluvius</label>  <h3>Select Cases</h3>
   <label><input type="checkbox" value="Nominative" checked> Nominative</label>
   <label><input type="checkbox" value="Genitive" checked> Genitive</label>
   <label><input type="checkbox" value="Dative" checked> Dative</label>
@@ -81,17 +84,41 @@ const nounData = {
       { form: "terras", case: "Accusative" },
       { form: "terris", case: "Ablative" }
     ],
-  puer: [
-      { form: "puer", case: "Nominative" },
-      { form: "pueri", case: "Genitive" },
-      { form: "puero", case: "Dative" },
-      { form: "puerum", case: "Accusative" },
-      { form: "puerō", case: "Ablative" },
-      { form: "pueri", case: "Nominative" },
-      { form: "puerōrum", case: "Genitive" },
-      { form: "puerīs", case: "Dative" },
-      { form: "puerōs", case: "Accusative" },
-      { form: "puerīs", case: "Ablative" }
+  vir:[
+    { form: "vir", case: "Nominative" },
+      { form: "virī", case: "Genitive" },
+      { form: "virō", case: "Dative" },
+      { form: "virum", case: "Accusative" },
+      { form: "virō", case: "Ablative" },
+      { form: "virī", case: "Nominative" },
+      { form: "virōrum", case: "Genitive" },
+      { form: "virīs", case: "Dative" },
+      { form: "virōs", case: "Accusative" },
+      { form: "virīs", case: "Ablative" }
+    ],
+  oppidum: [
+      { form: "oppidum", case: "Nominative" },
+      { form: "oppidi", case: "Genitive" },
+      { form: "oppido", case: "Dative" },
+      { form: "oppidum", case: "Accusative" },
+      { form: "oppido", case: "Ablative" },
+      { form: "oppida", case: "Nominative" },
+      { form: "oppidorum", case: "Genitive" },
+      { form: "oppidis", case: "Dative" },
+      { form: "oppida", case: "Accusative" },
+      { form: "oppidis", case: "Ablative" }
+    ],
+  fluvius: [
+    { form: "fluvius", case: "Nominative" },
+      { form: "fluviī", case: "Genitive" },
+      { form: "flūviū", case: "Dative" },
+      { form: "flūviū", case: "Accusative" },
+      { form: "flūviō", case: "Ablative" },
+      { form: "fluviī", case: "Nominative" },
+      { form: "flūviōrum", case: "Genitive" },
+      { form: "fluviīs", case: "Dative" },
+      { form: "flūviōs", case: "Accusative" },
+      { form: "flūviīs", case: "Ablative" }
     ]
 };
 
